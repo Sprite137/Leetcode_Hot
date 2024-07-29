@@ -1,0 +1,2 @@
+public class P72 {
+}

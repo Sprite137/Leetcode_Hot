@@ -20,39 +20,21 @@ public class P438 {
             return null;
         }
         for(char a : p.toCharArray()){
-            bits[a-'a']--;
+            bits[a-'a']++;
         }
 
         List<Integer> ans = new ArrayList<>();
 
-        int left = 0, right = 0;
-        while(left != s.length()){
-            // 如果无效，right++
-            while( right < s.length() && !isValid(bits)){
-                bits[s.charAt(right++)-'a']++;
+        for(int i = 0;i<=s.length()-p.length(); i++){
+            int[] temp = new int[26];
+            for(int j = i; j<i+p.length(); j++){
+                temp[s.charAt(j)-'a']++;
             }
-
-            // 如果有效 left++
-            while( left <= right && isValid(bits)){
-                bits[s.charAt(left)-'a']--;
-                ans.add(left);
-                left++;
-            }
-
-            if(right == s.length()){
-                return ans;
+            if(Arrays.toString(temp).equals(Arrays.toString(bits))){
+                ans.add(i);
             }
         }
         return ans;
-    }
-
-    public boolean isValid(int[] bits){
-        for(int i : bits){
-            if(i < 0){
-                return false;
-            }
-        }
-        return true;
     }
 
     public static void main(String[] args) {

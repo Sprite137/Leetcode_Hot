@@ -9,11 +9,14 @@ public class ListNode {
 
     public ListNode(){};
 
-    public ListNode create(int[] nums){
-        ListNode head = new ListNode();
-        ListNode cur = head;
+    public void create(ListNode node,int[] nums){
+        ListNode cur = node;
 
-        for(int i = 0;i<nums.length;i++){
+        if(nums == null){
+            node = null;
+            return;
+        }
+        for(int i = 0;i < nums.length;i++){
             cur.val = nums[i];
             if(i==nums.length-1){
                 break;
@@ -21,6 +24,13 @@ public class ListNode {
             cur.next = new ListNode();
             cur = cur.next;
         }
-        return head;
+    }
+
+    public void show(ListNode node){
+        ListNode cur = node;
+        while(cur != null){
+            System.err.println(cur.val);
+            cur = cur.next;
+        }
     }
 }

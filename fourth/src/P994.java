@@ -7,9 +7,8 @@ import java.util.Queue;
  * @date 2024/8/14 9:12
  */
 public class P994 {
-    // todo 修改
-    int step = 0;
-    public int orangesRotting(int[][] grid) {
+    public static int orangesRotting(int[][] grid) {
+        int step = 0;
         int newOrange = 0;
         int col = grid.length, row= grid[0].length;
         Queue<int[]> queue = new LinkedList<>();
@@ -23,6 +22,9 @@ public class P994 {
                 }
             }
         }
+        if(newOrange == 0){
+            return 0;
+        }
         int[][] dirs = new int[][]{{-1,0},{1,0},{0,1},{0,-1}};
         while( !queue.isEmpty() && newOrange > 0){
             int size = queue.size();
@@ -32,6 +34,7 @@ public class P994 {
                     int newI = temp[0] + dir[0],newJ = temp[1] + dir[1];
                     if(newI < col && newI >=0 && newJ <row &&  newJ >=0 && grid[newI][newJ] == 1){
                         newOrange--;
+                        grid[newI][newJ] = 2;
                         queue.add(new int[]{newI,newJ});
                     }
                 }
@@ -42,5 +45,9 @@ public class P994 {
             return -1;
         }
         return step;
+    }
+
+    public static void main(String[] args) {
+        orangesRotting(new int[][]{{2,1,1},{0,1,1},{1,0,1}});
     }
 }

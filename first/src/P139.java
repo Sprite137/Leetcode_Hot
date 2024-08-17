@@ -22,7 +22,7 @@ public class P139 {
     public static void main(String[] args) {
         String s = "catsandog";
         String[] wordDict = {"cats","dog","sand","and","cat"};
-        System.out.println(wordBreak(s,new ArrayList<>(List.of(wordDict))));
+//        System.out.println(wordBreak(s,new ArrayList<>(List.of(wordDict))));
 
 //        Integer a = Integer.valueOf(2);
 //        int b=2;

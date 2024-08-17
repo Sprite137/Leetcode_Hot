@@ -1,6 +1,6 @@
 public class P208 {
     class Trie {
-        static class TrieNode{
+        class TrieNode{
             boolean isWord;
             TrieNode children[];
 

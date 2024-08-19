@@ -13,23 +13,37 @@ public class P84 {
     public static int largestRectangleArea(int[] heights) {
         int ans = 0;
         Stack<Integer> stack = new Stack<>();
+        // 维护递增栈
         for(int i = 0 ;i<heights.length; i++){
-            int min = Integer.MAX_VALUE;
-            while(!stack.isEmpty() && heights[stack.peek()] < heights[i] ){
+            while(!stack.isEmpty() && heights[i] < heights[stack.peek()] ){
                 int index = stack.pop();
-                min = Math.min(min,heights[index]);
-                ans = Math.max(ans,(i-index+1)*min);
+                if(!stack.isEmpty()){
+                    ans = Math.max(ans,(i-stack.peek()-1)*heights[index]);
+                }
+                else {
+                    ans = Math.max(ans,heights[index]*i);
+                }
+
             }
             stack.add(i);
             ans = Math.max(ans,heights[i]);
         }
-        //  剩余stack的最大值
-        List<Integer> list = new ArrayList<>(stack);
 
+        //  剩余stack的最大值
+        while(!stack.isEmpty()){        // 0 1 2 3 4
+            int index =  stack.pop();
+            if(!stack.isEmpty()){
+                ans = Math.max(ans,heights[index]*(heights.length-stack.peek()-1));
+            }
+            else {
+                ans = Math.max(ans,heights[index]*heights.length);
+            }
+
+        }
         return ans;
     }
 
     public static void main(String[] args) {
-        System.err.println(largestRectangleArea(new int[]{2,0,2}));
+        System.err.println(largestRectangleArea(new int[]{5,4,1,2}));
     }
 }

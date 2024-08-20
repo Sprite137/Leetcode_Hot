@@ -10,12 +10,17 @@ import java.util.List;
 public class P139 {
     public static boolean wordBreak(String s, List<String> wordDict) {
         boolean[] dp = new boolean[s.length()];
-        dp[0] = true;
         for(int i = 0; i<s.length(); i++){
             for(int j = 0; j<=i;j++){
                 if (!dp[i] && wordDict.contains(s.substring(j, i+1))) {
-                    dp[i] = dp[j];
-                    break;
+                    if(j == 0){
+                        dp[i] = true;
+                    }
+                    else {
+                        dp[i] = dp[j-1];
+                    }
+
+//                    break;
                 }
             }
         }
@@ -25,8 +30,9 @@ public class P139 {
     public static void main(String[] args) {
         String a = "1245";
         List<String> list = new ArrayList<>();
-        list.add("leet");
-        list.add("code");
-        System.err.println(wordBreak("leetcode",list));
+        list.add("dog");
+        list.add("s");
+        list.add("gs");
+        System.err.println(wordBreak("dogs",list));
     }
 }

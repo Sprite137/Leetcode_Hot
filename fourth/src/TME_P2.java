@@ -10,38 +10,52 @@ import java.util.Queue;
  * @date 2024/8/23 19:14
  */
 public class TME_P2 {
+    int maxDepth = 0;
     public TreeNode makeCompleteTree (TreeNode root) {
         // write code here
-        if( isValid(root)){
-            return root;
-        }
 
-        // 补全逻辑
-        List<List<Integer>> list = validList(allVal(root));
+        // 获取最大深度
+        maxDepth = maxDepth(root,0);
 
-        root = dfs(root,list,0,0);
+        // 根据最大深度获取list
+        List<List<Integer>> list = getDoubleList(root);
+
+        // 构建有效list
+        list = getValidList(list);
+        System.err.println(maxDepth);
+
+        // 根据有效list构建完全二叉树
+        root = makeTree(root,list,0,0);
         return root;
 
 
     }
 
-    public TreeNode dfs(TreeNode node,List<List<Integer>> list,int height,int index){
+    public int maxDepth(TreeNode node, int depth){
+        if(node == null){
+            return depth;
+        }
+        else {
+            return Math.max(maxDepth(node.left,depth+1), maxDepth(node.right,depth+1));
+        }
+    }
+
+    public TreeNode makeTree(TreeNode node,List<List<Integer>> list,int height,int index){
         if(height == list.size()){
             return null;
         }
         if(node != null){
-            if(list.get(height).size() > index){
-                node.val = list.get(height).get(index);
-                node.left = dfs(node.left,list,height+1,index*2);
-                node.right = dfs(node.right,list,height+1,index*2+1);
-                return node;
-            }
+            node.val = list.get(height).get(index);
+            node.left = makeTree(node.left,list,height+1,index*2);
+            node.right = makeTree(node.right,list,height+1,index*2+1);
             return node;
 
         }
         else {
             if(list.get(height).size() > index){
                 node = new TreeNode(list.get(height).get(index));
+                node.left = makeTree(node.left,list,height+1,index*2);
+                node.right = makeTree(node.right,list,height+1,index*2+1);
                 return node;
             }
             return null;
@@ -49,37 +63,49 @@ public class TME_P2 {
         }
     }
 
-    public List<List<Integer>> validList(List<List<Integer>> list){
+    public List<List<Integer>> getValidList(List<List<Integer>> list){
         List<List<Integer>> ans = new ArrayList<>();
-        for(int i = 0;i < list.size()-2; i++){
-            List<Integer> temp = new ArrayList<>();
-            for(int num : list.get(i)){
-                temp.add(num == Integer.MAX_VALUE?1:num);
+        // 设置第0层 ~ 倒数第二层
+        for(int i = 0; i<list.size()-1; i++){
+            List<Integer> temp = list.get(i);
+            for(int j = 0; j<temp.size(); j++){
+                if(temp.get(j) == Integer.MAX_VALUE){
+                    temp.set(j,1);
+                }
             }
             ans.add(temp);
         }
-        int lastNum = 0;
-        List<Integer> temp = new ArrayList<>(list.get(list.size()-1));
-        for(int i = 0; i< list.get(list.size()-1).size(); i++){
-            if(list.get(list.size()-1).get(i) != Integer.MAX_VALUE){
-                lastNum = i;
+
+        // 构建倒数第一层 : 最后出现的节点之前的数置1
+        List<Integer> temp = list.get(list.size()-1);
+        int lastIndex = 0;
+        for(int j = 0; j<temp.size(); j++){
+            if(temp.get(j) != Integer.MAX_VALUE){
+                lastIndex = j;
             }
         }
-        for(int i =0; i<lastNum; i++){
-            if(temp.get(i) == Integer.MAX_VALUE){
-                temp.set(i,1);
+        for(int j = 0; j<lastIndex; j++){
+            if(temp.get(j) == Integer.MAX_VALUE){
+                temp.set(j,1);
             }
+        }
+
+        // 构建倒数第一层 : 最后出现的节点之后的数删除
+        for(int j = lastIndex+1; j<list.get(list.size()-1).size(); j++){
+            temp.remove(j);
         }
         ans.add(temp);
         return ans;
     }
 
 
-    public boolean isValid(TreeNode root){
+    public List<List<Integer>> getDoubleList(TreeNode root){
         List<List<Integer>> list = new ArrayList<>();
         Queue<TreeNode> queue = new LinkedList<>();
         queue.add(root);
-        while (!queue.isEmpty()){
+        int depth = 0;
+        while (depth < maxDepth){
+            depth++;
             int size = queue.size();
             List<Integer> temp = new ArrayList<>();
             for(int i = 0; i<size; i++){
@@ -91,62 +117,8 @@ public class TME_P2 {
                 }
                 else {
                     temp.add(Integer.MAX_VALUE);
-                }
-            }
-            list.add(temp);
-        }
-
-        int lastNum = 0;
-        for(int num : list.get(list.size()-1)){
-            if(num != Integer.MAX_VALUE){
-                lastNum++;
-            }
-        }
-
-        for (int i = 0; i< list.size()-1; i++) {
-            int size = 0;
-            if (list.get(i).get(0) == Integer.MAX_VALUE) {
-                return false;
-            }
-            for (int num : list.get(i)) {
-                if (num != Integer.MAX_VALUE) {
-                    size++;
-                }
-            }
-            if(i == list.size()-2){
-                if(size < lastNum/2){
-                    return false;
-                }
-            }
-            else {
-                if (size != Math.pow(2, i)) {
-                    return false;
-                }
-            }
-
-        }
-        if(list.get(list.size()-1).get(0) == Integer.MAX_VALUE && lastNum != 0){
-            return false;
-        }
-        return true;
-    }
-
-    public List<List<Integer>> allVal(TreeNode root){
-        List<List<Integer>> list = new ArrayList<>();
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.add(root);
-        while (!queue.isEmpty()){
-            int size = queue.size();
-            List<Integer> temp = new ArrayList<>();
-            for(int i = 0; i<size; i++){
-                TreeNode node = queue.poll();
-                if(node != null){
-                    temp.add(node.val);
-                    queue.add(node.left);
-                    queue.add(node.right);
-                }
-                else {
-                    temp.add(Integer.MAX_VALUE);
+                    queue.add(null);
+                    queue.add(null);
                 }
             }
             list.add(temp);
@@ -157,7 +129,7 @@ public class TME_P2 {
     public static void main(String[] args) {
         TME_P2 x = new TME_P2();
         TreeNode root = new TreeNode(1);
-//        root.left = new TreeNode(2);
+        root.left = new TreeNode(2);
         root.right = new TreeNode(3);
         root.right.left = new TreeNode(4);
         System.err.println(x.makeCompleteTree(root));

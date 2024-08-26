@@ -44,35 +44,64 @@ public class P416 {
 //            }
 //        }
 //    }
-    public boolean canPartition(int[] nums) {
-        Arrays.sort(nums);
-        int sum = 0;
-        for(int num :nums){
-            sum += num;
-        }
-        if(sum %2 !=0){
-            return false;
-        }
+//    public boolean canPartition(int[] nums) {
+//        Arrays.sort(nums);
+//        int sum = 0;
+//        for(int num :nums){
+//            sum += num;
+//        }
+//        if(sum %2 !=0){
+//            return false;
+//        }
+//
+//
+//        // 01背包问题
+//        boolean[][] dp = new boolean[nums.length+1][sum/2+1];
+//        for(int i = 0 ;i<nums.length;i++){
+//            dp[i][0] = true;
+//            for(int j = 0; j<= sum/2;j++){
+//                dp[i+1][j] = dp[i][j];
+//                if(!dp[i+1][j] && j >= nums[i]){
+//                    dp[i+1][j] = dp[i][j-nums[i]];
+//                }
+//            }
+//        }
+//
+//
+//        return dp[nums.length][sum/2];
+//    }
+public boolean canPartition(int[] nums) {
+    int sum = 0;
+    for(int num: nums){
+        sum += num;
+    }
+    if(sum % 2 != 0){
+        return false;
+    }
+    int target = sum/2;
 
-
-        // 01背包问题
-        boolean[][] dp = new boolean[nums.length+1][sum/2+1];
-        for(int i = 0 ;i<nums.length;i++){
-            dp[i][0] = true;
-            for(int j = 0; j<= sum/2;j++){
-                dp[i+1][j] = dp[i][j];
-                if(!dp[i+1][j] && j >= nums[i]){
-                    dp[i+1][j] = dp[i][j-nums[i]];
-                }
+    // 分割子集
+    boolean[][] dp = new boolean[nums.length+1][target+1];
+    for(int i = 0 ;i<nums.length; i++){
+        if(nums[i] <= target){
+            dp[i+1][nums[i]] = true;
+        }
+    }
+    for (int i = 0; i<nums.length; i++) {
+        for (int j = 0; j <= target; j++) {
+            if (j + nums[i] <= target && !dp[i+1][j+nums[i]]) {
+                dp[i+1][j + nums[i]] = dp[i][j];
+            }
+            if(dp[i][j]){
+                dp[i+1][j] = true;
             }
         }
-
-
-        return dp[nums.length][sum/2];
     }
+    return dp[nums.length][target];
+}
 
     public static void main(String[] args) {
         P416 x = new P416();
-        System.err.println(x.canPartition(new int[]{1,2,3,8}));
+        System.err.println(x.canPartition(new int[]{1,5,11,5}));
     }
 }

@@ -1,5 +1,8 @@
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.Lock;
 
 /**
  * @author: xuzhi
@@ -127,4 +130,46 @@ public class Test1 {
 //        }
 //        return true;
 //    }
+   public int maxK(int[] nums, int k) {
+      // write code here
+      PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+      for(int num : nums){
+         priorityQueue.add(num);
+         if(priorityQueue.size() > k){
+            priorityQueue.poll();
+         }
+      }
+      int ans = 0;
+      for(int num : priorityQueue){
+         ans += num;
+      }
+      return ans;
+   }
+
+   public static String mostFrequentSubstring(String s, int k) {
+      // write code here
+      HashMap<String,Integer> map = new HashMap<>();
+      for(int i  = 0;i<=s.length()-k;i++){
+         map.put(s.substring(i,i+k),map.getOrDefault(s.substring(i,i+k),0)+1);
+      }
+      List<String> list = new ArrayList<>();
+      int max = Collections.max(map.values());
+      for(String temp: map.keySet()){
+         if(map.get(temp) == max){
+            list.add(temp);
+         }
+      }
+      String ans = list.get(0);
+      for(String temp : list){
+         if(ans.compareTo(temp) >=0){
+            ans = temp;
+         }
+      }
+      return ans;
+   }
+
+
+   public static void main(String[] args) throws InterruptedException {
+      System.err.println(mostFrequentSubstring("isisssi", 2));
+   }
 }

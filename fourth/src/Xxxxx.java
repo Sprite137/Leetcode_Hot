@@ -152,8 +152,32 @@ public class Xxxxx {
 //    }
     static ThreadLocal threadLocal = new ThreadLocal();
 
+    static int ans = 0;
+    static  int index = 1;
     public static void main(String[] args) {
-        threadLocal.set("a");
+        TreeNode root = new TreeNode(5);
+        root.left = new TreeNode(2);
+        root.right = new TreeNode(10);
+        root.left.left = new TreeNode(1);
+
+        dfs(root,4);
+        System.err.println(ans);
+    }
+
+    public  static void dfs(TreeNode node,int k){
+        if(node != null){
+            dfs(node.right,k);
+            if(index >=k){
+                if(index >k){
+                    return;
+                }
+                ans = node.val;
+                index++;
+                return;
+            }
+            index++;
+            dfs(node.left,k);
+        }
     }
 
 }

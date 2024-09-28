@@ -7,34 +7,59 @@ import java.util.*;
  */
 
 public class P56 {
+//    public int[][] merge(int[][] intervals) {
+//        Arrays.sort(intervals, new Comparator<int[]>() {
+//            @Override
+//            public int compare(int[] o1, int[] o2) {
+//                return o1[0] - o2[0];
+//            }
+//        });
+//
+//        Stack<int[]> stack = new Stack<>();
+//        stack.add(intervals[0]);
+//
+//        for(int i = 1; i< intervals.length; i++){
+//            if(stack.peek()[1] >= intervals[i][0]){
+//                int[] temp = stack.pop();
+//                stack.add(new int[]{temp[0], Math.max(intervals[i][1],temp[1])});
+//            }
+//            else {
+//                stack.add(intervals[i]);
+//            }
+//        }
+//
+//
+//        int[][] res = new int[stack.size()][2];
+//        int index = 0;
+//        for(int[] ints : stack){
+//            res[index++] = ints;
+//        }
+//        return  res;
+//    }
     public int[][] merge(int[][] intervals) {
         Arrays.sort(intervals, new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
-                return o1[0] - o2[0];
+                return o1[0]-o2[0];
             }
         });
-
         Stack<int[]> stack = new Stack<>();
         stack.add(intervals[0]);
-
-        for(int i = 1; i< intervals.length; i++){
-            if(stack.peek()[1] >= intervals[i][0]){
-                int[] temp = stack.pop();
-                stack.add(new int[]{temp[0], Math.max(intervals[i][1],temp[1])});
-            }
-            else {
+        for(int i = 1;i < intervals.length; i++){
+            if(intervals[i][0] > stack.peek()[1]){
                 stack.add(intervals[i]);
             }
+            else{
+                int[] temp = stack.pop();
+                stack.add(new int[]{temp[0],Math.max(temp[1],intervals[i][1])});
+            }
         }
-
-
-        int[][] res = new int[stack.size()][2];
+        int[][] ans = new int[stack.size()][2];
         int index = 0;
-        for(int[] ints : stack){
-            res[index++] = ints;
+        for(int[] temp : stack){
+            ans[index++] = temp;
         }
-        return  res;
+        return ans;
     }
 
     public static void main(String[] args) {
